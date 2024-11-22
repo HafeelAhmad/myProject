@@ -1,0 +1,122 @@
+[
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "DeleteVaccinationRecord",
+    "RelativePath": "Vaccine/DeleteVaccinationRecord",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "OrderID",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "GetNationalityList",
+    "RelativePath": "Vaccine/GetNationalityList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "GetPatientsList",
+    "RelativePath": "Vaccine/GetPatientsList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "GetPatientsView",
+    "RelativePath": "Vaccine/GetPatientsView",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "GetVaccinationRecord",
+    "RelativePath": "Vaccine/GetVaccinationRecord",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "OrderID",
+        "Type": "System.Int32",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "GetVaccinationView",
+    "RelativePath": "Vaccine/GetVaccinationView",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "_pat",
+        "Type": "Vaccine_API.Models.Patient",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "GetVaccineList",
+    "RelativePath": "Vaccine/GetVaccineList",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "SaveVaccinationRecord",
+    "RelativePath": "Vaccine/SaveVaccinationRecord",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "formData",
+        "Type": "Vaccine_API.Models.VaccinationRecord",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "Vaccine_API.Controllers.VaccineController",
+    "Method": "SearchPatient",
+    "RelativePath": "Vaccine/SearchPatient",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "_pat",
+        "Type": "Vaccine_API.Models.Patient",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

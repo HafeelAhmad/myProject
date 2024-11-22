@@ -1,0 +1,257 @@
+
+create database VACCINE
+GO
+
+USE VACCINE
+GO
+/****** Object:  Table [dbo].[Vaccine_Master]    Script Date: 23-11-2024 2.42.00 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Vaccine_Master](
+	[VaccineID] [int] NOT NULL,
+	[VaccineName] [nvarchar](100) NOT NULL,
+	[VaccineType] [nvarchar](50) NOT NULL,
+	[TotalDoses] [int] NOT NULL,
+	[Notes] [nvarchar](255) NULL,
+	[Suspended] [bit] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[VaccineID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Vaccination_Record]    Script Date: 23-11-2024 2.42.02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Vaccination_Record](
+	[OrderID] [int] IDENTITY(1,1) NOT NULL,
+	[PatientID] [int] NULL,
+	[VaccineID] [int] NULL,
+	[VaccinationDate] [datetime] NULL,
+	[DoseNumber] [int] NULL,
+	[AddedBy] [varchar](100) NULL,
+	[AddedDate] [datetime] NULL,
+	[Notes] [nvarchar](255) NULL,
+	[Suspended] [bit] NULL,
+	[ModifiedBy] [varchar](100) NULL,
+	[ModifiedDate] [datetime] NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[OrderID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON, OPTIMIZE_FOR_SEQUENTIAL_KEY = OFF) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Patient_Master]    Script Date: 23-11-2024 2.42.02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Patient_Master](
+	[PatientID] [int] IDENTITY(1,1) NOT NULL,
+	[PatientName] [varchar](100) NULL,
+	[DOB] [datetime] NULL,
+	[NationalityId] [int] NULL,
+	[PassportNo] [varchar](50) NULL,
+	[EmiratesID] [varchar](50) NULL,
+	[Suspended] [bit] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[Nationality_Master]    Script Date: 23-11-2024 2.42.02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[Nationality_Master](
+	[NationalityId] [int] IDENTITY(1,1) NOT NULL,
+	[Nationality] [varchar](200) NULL,
+	[Suspended] [bit] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  View [dbo].[Vaccination_View]    Script Date: 23-11-2024 2.42.02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE VIEW [dbo].[Vaccination_View] AS
+SELECT 
+    vr.OrderID,
+    vr.PatientID,
+    pm.PatientName,
+    pm.EmiratesID,
+    pm.PassportNo,
+	pm.DOB,
+    nm.Nationality,           
+    vr.VaccineID,
+    vm.VaccineName,
+    vm.VaccineType,
+    vm.TotalDoses,
+    vr.VaccinationDate,
+    vr.DoseNumber,
+    vr.AddedBy,
+    vr.AddedDate,
+    vr.Notes,
+    vr.Suspended
+FROM 
+    dbo.Vaccination_Record vr
+INNER JOIN 
+    dbo.Patient_Master pm ON vr.PatientID = pm.PatientID
+INNER JOIN 
+    dbo.Vaccine_Master vm ON vr.VaccineID = vm.VaccineID
+INNER JOIN 
+    dbo.Nationality_Master nm ON pm.NationalityID = nm.NationalityID
+
+GO
+/****** Object:  View [dbo].[Patient_View]    Script Date: 23-11-2024 2.42.02 AM ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE VIEW [dbo].[Patient_View] AS
+SELECT 
+    pm.PatientID,
+    pm.PatientName,
+    pm.EmiratesID,
+    pm.PassportNo,
+    pm.DOB,
+    nm.Nationality,
+    pm.NationalityId,
+    CASE 
+        WHEN EXISTS (SELECT 1 FROM Vaccination_Record vr WHERE vr.PatientID = pm.PatientID AND vr.Suspended = 0) 
+        THEN 'Vaccinated' 
+        ELSE '' 
+    END AS Status
+FROM 
+    dbo.Patient_Master pm 
+INNER JOIN 
+    dbo.Nationality_Master nm 
+    ON pm.NationalityID = nm.NationalityID 
+WHERE 
+    pm.Suspended = 0;
+
+
+GO
+SET IDENTITY_INSERT [dbo].[Nationality_Master] ON 
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (1, N'American', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (2, N'Canadian', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (3, N'Indian', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (4, N'British', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (5, N'Australian', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (6, N'French', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (7, N'German', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (8, N'Italian', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (9, N'Spanish', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (10, N'Brazilian', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (11, N'Chinese', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (12, N'Japanese', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (13, N'Mexican', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (14, N'South African', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (15, N'Russian', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (16, N'Egyptian', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (17, N'Saudi', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (18, N'Turkish', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (19, N'Pakistani', 0)
+GO
+INSERT [dbo].[Nationality_Master] ([NationalityId], [Nationality], [Suspended]) VALUES (20, N'Bangladeshi', 0)
+GO
+SET IDENTITY_INSERT [dbo].[Nationality_Master] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Patient_Master] ON 
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (1, N'John Doe', CAST(N'1985-02-15T00:00:00.000' AS DateTime), 1, N'A1234567', N'784-1985-1234567-1', 0)
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (2, N'Jane Smith', CAST(N'1990-07-25T00:00:00.000' AS DateTime), 2, N'B2345678', N'784-1990-2345678-2', 0)
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (3, N'Ali Ahmed', CAST(N'1982-10-10T00:00:00.000' AS DateTime), 3, N'C3456789', N'784-1982-3456789-3', 0)
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (4, N'Fatima Khan', CAST(N'1995-01-05T00:00:00.000' AS DateTime), 1, N'D4567890', N'784-1995-4567890-4', 0)
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (5, N'Carlos Gomez', CAST(N'1988-08-20T00:00:00.000' AS DateTime), 4, N'E5678901', N'784-1988-5678901-5', 0)
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (6, N'Emily Davis', CAST(N'1993-12-31T00:00:00.000' AS DateTime), 2, N'F6789012', N'784-1993-6789012-6', 0)
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (7, N'Mohammed Hassan', CAST(N'1978-03-15T00:00:00.000' AS DateTime), 3, N'G7890123', N'784-1978-7890123-7', 0)
+GO
+INSERT [dbo].[Patient_Master] ([PatientID], [PatientName], [DOB], [NationalityId], [PassportNo], [EmiratesID], [Suspended]) VALUES (8, N'Sophia Wilson', CAST(N'2000-06-18T00:00:00.000' AS DateTime), 1, N'H8901234', N'784-2000-8901234-8', 0)
+GO
+SET IDENTITY_INSERT [dbo].[Patient_Master] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Vaccination_Record] ON 
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (1, 1, 2, CAST(N'2020-03-05T00:00:00.000' AS DateTime), 1, N'benila', CAST(N'2024-11-21T21:37:50.000' AS DateTime), NULL, 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (2, 1, 2, CAST(N'2020-05-15T00:00:00.000' AS DateTime), 2, N'benila', CAST(N'2024-11-21T21:38:38.000' AS DateTime), NULL, 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (3, 2, 2, CAST(N'2020-06-12T00:00:00.000' AS DateTime), 1, N'benila', CAST(N'2024-11-21T21:37:50.000' AS DateTime), NULL, 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (4, 2, 2, CAST(N'2020-07-05T00:00:00.000' AS DateTime), 1, N'benila', CAST(N'2024-11-21T21:37:50.000' AS DateTime), NULL, 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (5, 1, 3, CAST(N'2024-11-22T06:52:44.057' AS DateTime), 1, N'benila', CAST(N'2024-11-22T06:52:44.057' AS DateTime), N'done', 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (6, 1, 2, CAST(N'2024-11-22T07:13:59.353' AS DateTime), 1, N'benila', CAST(N'2024-11-22T07:13:59.353' AS DateTime), N'done', 1, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (7, 1, 1, CAST(N'2024-11-22T07:25:11.730' AS DateTime), 1, N'benila', CAST(N'2024-11-22T07:25:11.730' AS DateTime), N'ddd', 1, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (9, 2, 1, CAST(N'2024-11-21T00:00:00.000' AS DateTime), 1, N'benila', CAST(N'2024-11-22T23:15:55.880' AS DateTime), N'123', 1, N'Benila', CAST(N'2024-11-22T23:17:00.657' AS DateTime))
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (10, 7, 1, CAST(N'2024-11-23T00:00:00.000' AS DateTime), 1, N'Benila', CAST(N'2024-11-23T00:51:05.067' AS DateTime), NULL, 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (11, 1, 6, CAST(N'2024-11-23T00:00:00.000' AS DateTime), 1, N'Benila', CAST(N'2024-11-23T00:51:32.007' AS DateTime), NULL, 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (12, 8, 2, CAST(N'2024-11-23T00:00:00.000' AS DateTime), 1, N'Benila', CAST(N'2024-11-23T00:52:03.277' AS DateTime), NULL, 0, NULL, NULL)
+GO
+INSERT [dbo].[Vaccination_Record] ([OrderID], [PatientID], [VaccineID], [VaccinationDate], [DoseNumber], [AddedBy], [AddedDate], [Notes], [Suspended], [ModifiedBy], [ModifiedDate]) VALUES (13, 1, 7, CAST(N'2024-11-23T00:00:00.000' AS DateTime), 1, N'Benila', CAST(N'2024-11-23T01:02:33.893' AS DateTime), N'test', 0, NULL, NULL)
+GO
+SET IDENTITY_INSERT [dbo].[Vaccination_Record] OFF
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (1, N'Sinopharm', N'Inactivated Virus', 2, N'Used for general vaccination against COVID-19.', 0)
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (2, N'Pfizer-BioNTech', N'mRNA', 2, N'Widely used COVID-19 vaccine with high efficacy.', 0)
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (3, N'AstraZeneca', N'Adenovirus vector', 2, N'Recommended for use in many countries for COVID-19.', 0)
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (4, N'Moderna', N'mRNA', 2, N'Alternative to Pfizer-BioNTech for COVID-19 vaccination.', 0)
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (5, N'Johnson & Johnson', N'Adenovirus vector', 1, N'Single-dose vaccine for COVID-19.', 0)
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (6, N'Covaxin', N'Inactivated Virus', 2, N'Made by Bharat Biotech, used primarily in India.', 0)
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (7, N'Sputnik V', N'Adenovirus vector', 2, N'Developed by Russia, used in several countries.', 0)
+GO
+INSERT [dbo].[Vaccine_Master] ([VaccineID], [VaccineName], [VaccineType], [TotalDoses], [Notes], [Suspended]) VALUES (8, N'Novavax', N'Protein Subunit', 2, N'Newer vaccine technology, available in some countries.', 0)
+GO
+ALTER TABLE [dbo].[Nationality_Master] ADD  DEFAULT ((0)) FOR [Suspended]
+GO
+ALTER TABLE [dbo].[Patient_Master] ADD  DEFAULT ((0)) FOR [Suspended]
+GO
+ALTER TABLE [dbo].[Vaccination_Record] ADD  DEFAULT (getdate()) FOR [AddedDate]
+GO
+ALTER TABLE [dbo].[Vaccination_Record] ADD  DEFAULT ((0)) FOR [Suspended]
+GO
+ALTER TABLE [dbo].[Vaccine_Master] ADD  DEFAULT ((0)) FOR [Suspended]
+GO

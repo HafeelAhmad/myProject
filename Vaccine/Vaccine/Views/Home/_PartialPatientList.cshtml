@@ -1,0 +1,85 @@
+﻿@model IEnumerable<PatientDTO>
+<div class="body1">
+<div class="modal fade" id="modalPatient" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <!-- Modal with extra-large width -->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Patient List</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" >
+                
+                <table  class="table table-bordered">
+                    <thead>
+                        <tr class="table-primary">
+                            <th>Sl No.</th>
+                            <th>Patient ID</th>
+                            <th>Patient Name</th>
+                            <th>Emirates ID</th>
+                            <th>Passport No.</th>
+                            <th>Date of Birth</th>
+                            <th>Nationality</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @{
+                            int index = 1;
+                        }
+                        @foreach (var d in Model)
+                        {
+                            <tr class="selectable-row" data-patientid="@d.PatientId">
+                                <td>@index</td>
+                                <td>@d.PatientId</td>
+                                <td>@d.PatientName</td>
+                                <td>@d.EmiratesID</td>
+                                <td>@d.PassportNo</td>
+                                <td>@d.DOB.ToString("dd-MMM-yyyy")</td>
+                                <td>@d.Nationality</td>                                
+                            </tr>
+                            index++;
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+<script>
+
+        $(document).ready(function () {
+        // Add click event to rows with class 'selectable-row'
+        $(document).on('click', '.selectable-row', function () {
+            // Get the PatientID from the clicked row
+            var patientId = $(this).data('patientid');
+
+           // Close the modal
+            var modal = bootstrap.Modal.getInstance(document.getElementById('modalPatient'));
+            modal.hide();
+            // Pass PatientID to your function
+            handlePatientSelection(patientId);
+        });
+
+    });
+
+    function handlePatientSelection(patientId) {
+      $.ajax({
+    url: '@Url.Action("FillPatient", "Home")',
+    type: 'GET',
+    data: { PatientID: patientId },
+    success: function (data) {
+       $('#divPatientDetail').html(data);
+    },
+    error: function (xhr, status, error) {
+        console.error("Error:", error);
+    }
+    });
+    }
+
+</script>
+
+

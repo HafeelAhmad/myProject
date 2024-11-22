@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "Vaccine_API\\Vaccine_API.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Vaccine\\Vaccine.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

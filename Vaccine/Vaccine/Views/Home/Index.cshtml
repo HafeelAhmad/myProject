@@ -1,0 +1,55 @@
+﻿<h2 style="text-align:center;">Record Vaccination</h2>
+
+    <div id="divPatientDetail"></div>
+
+
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script>
+    function OpenPatientModal()
+    {
+        $.ajax({
+            url: '@Url.Action("LoadPatients", "Home")',
+            success: function (data) {
+                $('#divPatientModal').html(data);
+                $('#modalPatient').modal("show");
+            }
+            ,
+    error: function (xhr, status, error) {
+        alert("Error: " + (xhr.responseJSON?.error || xhr.responseText || "Unknown error"));
+    }
+        });
+    }
+        $(document).ready(function () {
+        // $.ajax({
+        //     url: '@Url.Action("FillPatient", "Home")',
+        //     type: 'GET',
+        //     data: { PatientID: 0 },
+        //     success: function (data) {
+        //         // Insert the received data (usually HTML) into the divPatientDetail element
+        //         $('#divPatientDetail').html(data);
+        //     },
+        //     error: function (xhr, status, error) {
+        //         // Log error to console for troubleshooting
+        //         console.error("Error:", error);
+        //     }
+        // });
+        FillPatient(0);
+    });
+    function FillPatient(PatientID)
+    {
+        $.ajax({
+            url: '@Url.Action("FillPatient", "Home")',
+            type: 'GET',
+            data: { PatientID: PatientID },
+            success: function (data) {
+                // Insert the received data (usually HTML) into the divPatientDetail element
+                $('#divPatientDetail').html(data);
+            },
+            error: function (xhr, status, error) {
+                // Log error to console for troubleshooting
+                console.error("Error:", error);
+            }
+        });
+    }
+</script>

@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35514.174
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vaccine_API", "Vaccine_API\Vaccine_API.csproj", "{A8098D0F-38B5-4748-B373-2B07EB8084D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Vaccine", "Vaccine\Vaccine.csproj", "{236A0F6A-1A4C-4083-9A93-B8E8ABFA2B90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A8098D0F-38B5-4748-B373-2B07EB8084D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8098D0F-38B5-4748-B373-2B07EB8084D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8098D0F-38B5-4748-B373-2B07EB8084D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8098D0F-38B5-4748-B373-2B07EB8084D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{236A0F6A-1A4C-4083-9A93-B8E8ABFA2B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{236A0F6A-1A4C-4083-9A93-B8E8ABFA2B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{236A0F6A-1A4C-4083-9A93-B8E8ABFA2B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{236A0F6A-1A4C-4083-9A93-B8E8ABFA2B90}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

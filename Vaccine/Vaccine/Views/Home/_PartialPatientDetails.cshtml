@@ -1,0 +1,208 @@
+﻿@model Fill_Vaccine
+<style>
+    .highlighted-row {
+        background-color: #d9edf7; /* Light blue background */
+        font-weight: bold; /* Optional */
+    }
+
+    
+</style>
+<div >
+
+    <form id="form1">
+        <table class="table table-bordered table-striped">
+            <tbody>
+                <tr>
+                    <th>Patient Name   <button type="button" class="btn btn-primary" onclick="OpenPatientModal();">Search</button></th>
+                    <td><input type="text" class="form-control" asp-for="@Model.PatientName" disabled /></td>
+                    <th>Nationality</th>
+                    <td>
+                        <select class="form-select" asp-for="@Model.NationalityID" disabled>
+                            <option value="0">Select Nationality</option>
+                            @foreach (var item in Model.NationalityList)
+                            {
+                                <option value="@item.NationalityID">@item.Nationality</option>
+                            }
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Emirates ID</th>
+                    <td><input type="text" class="form-control" asp-for="@Model.EmiratesID" disabled /></td>
+                    <th>Passport No.</th>
+                    <td><input type="text" class="form-control" asp-for="@Model.PassportNo" disabled /></td>
+                </tr>
+                <tr>
+                    <th>DOB</th>
+                    <td><input type="text" class="form-control" asp-for="DOB" value="@Model.DOB?.ToString("dd-MMM-yyyy")" disabled /></td>
+                    <th>Patient ID</th>
+                    <td>
+                        <input type="text" class="form-control" asp-for="@Model.PatientID" disabled />
+                        <input type="hidden" asp-for="@Model.PatientID" />
+                        <input type="hidden" asp-for="@Model.OrderID" />
+                    </td>
+                </tr>
+                <tr>
+                    <th>Vaccine</th>
+                    <td>
+                        <select class="form-select" asp-for="@Model.VaccineID">
+                            <option value="0">Select Vaccine</option>
+                            @foreach (var item in Model.VaccineList)
+                            {
+                                <option value="@item.VaccineID">@item.VaccineName</option>
+                            }
+                        </select>
+                    </td>
+                    <th>Dose</th>
+                    <td>
+                        <select class="form-select" asp-for="@Model.DoseNumber">
+                            <option value="0">Select Dose</option>
+                            <option value="1">1st Dose</option>
+                            <option value="2">2nd Dose</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Administered Date</th>
+                    <td><input type="text" class="form-control Date" asp-for="VaccinationDate" value="@Model.VaccinationDate?.ToString("dd-MMM-yyyy")" /></td>
+                    <th>Remarks</th>
+                    <td><input type="text" class="form-control" asp-for="@Model.Notes" /></td>
+                </tr>
+            </tbody>
+        </table>
+    </form>
+    <!-- Add some spacing at the bottom -->
+    <div class="mt-3">
+        <button type="submit" class="btn btn-success" onclick="SaveVaccination();">Save</button>
+        <button type="button" class="btn btn-secondary">Cancel</button>
+    </div>
+
+    <div id="divPatientModal" ></div>
+    <br />
+    <div class="card-header" >
+        
+        <h4>Vaccination Details</h4>
+        <div class="card-body" style="width:100%;">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Vaccine Name</th>
+                        <th>Type</th>
+                        <th>Dose</th>
+                        <th>Date Administered</th>
+                        <th>Added By</th>
+                        <th>Remarks</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.VaccinationRecordList != null && Model.VaccinationRecordList.Any())
+                    {
+                        int index = 1;
+                        foreach (var record in Model.VaccinationRecordList)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>@record.VaccineName</td>
+                                <td>@record.VaccineType</td>
+                                <td>@(record.DoseNumber == 1 ? "1st Dose" : record.DoseNumber == 2 ? "2nd Dose" : "")</td>
+                                <td>@record.VaccinationDate.ToString("dd-MMM-yyyy")</td>
+                                <td>@record.AddedBy</td>
+                                <td>@record.Notes</td>
+                                <td>
+                                    <button type="button" class="btn btn-outline-primary" onclick="GetVaccinationRecord(@record.OrderID,this);">Edit</button>
+                                    <button type="button" class="btn btn-outline-success" onclick="DeleteVaccinationRecord(@record.OrderID);">Delete</button>
+                                </td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No vaccination records found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+     $(".Date").datepicker({
+        dateFormat: 'dd-M-yy',  // Optional: Customize date format
+      });
+    function SaveVaccination()
+    {
+         var formData = $('#form1').serialize();
+
+            // Send AJAX request to the server
+            $.ajax({
+                url: '@Url.Action("SaveVaccination", "Home")',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                     if (response.errorCode === -1) {
+                // Handle validation errors
+                let errors = response.errors;
+                let errorMessages = errors.map(e => `${e.propertyName}: ${e.errorMessage}`).join("\n");
+                alert("Validation Errors:\n" + errorMessages);
+            } else {
+                alert(response.message);
+                    FillPatient($('#PatientID').val());
+            }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                    alert('An error occurred while saving the vaccination record.');
+                    console.error(error);
+                }
+            });
+    }
+        function GetVaccinationRecord(OrderID,button ) {
+            $('.highlighted-row').removeClass('highlighted-row');
+
+    // Add highlight to the current row
+    $(button).closest('tr').addClass('highlighted-row');
+        $.ajax({
+           url: '@Url.Action("GetVaccinationRecord", "Home")',
+            type: 'GET',
+            data: { OrderID: OrderID },
+            success: function (data) {
+                if (data) {
+                    $('#form1 input[name="OrderID"]').val(data.orderID);
+                    $('#form1 select[name="VaccineID"]').val(data.vaccineID);
+                    $('#form1 select[name="DoseNumber"]').val(data.doseNumber);
+                    $('#form1 input[name="VaccinationDate"]').val(data.vaccinationDate);
+                    $('#form1 input[name="Notes"]').val(data.notes);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+                alert('An error occurred while fetching patient details.');
+            }
+        });
+    }
+    function DeleteVaccinationRecord(OrderID)
+    {
+        $.ajax({
+            url: '@Url.Action("DeleteVaccinationRecord", "Home")',
+            type: 'GET',
+            data: { OrderID: OrderID },
+            success: function (data) {
+                // Insert the received data (usually HTML) into the divPatientDetail element
+                alert(data.message);
+                    FillPatient($('#PatientID').val());
+            },
+            error: function (xhr, status, error) {
+                // Log error to console for troubleshooting
+                console.error("Error:", error);
+            }
+        });
+    }
+
+</script>

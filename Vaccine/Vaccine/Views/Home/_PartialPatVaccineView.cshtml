@@ -1,0 +1,89 @@
+﻿@model Fill_Vaccine
+<div class="container mt-4">
+    <!-- Patient Demographics -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Covid Vaccination Card</h4>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4" style="align-content:center">
+                    <img src="~/images/health.jpeg" style="height=5px;" />
+                </div>                
+            </div>
+            <br />
+
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Name:</strong> @Model.Patient.PatientName
+                </div>
+                <div class="col-md-4">
+                    <strong>Date of Birth:</strong> @Model.Patient.DOB.ToString("dd-MMM-yyyy")
+                </div>
+                <div class="col-md-4">
+                    <strong>Nationality:</strong> @Model.Patient.Nationality
+                </div>
+            </div>
+            <br />
+            <br />
+            <br />
+            <div class="row">
+                <div class="col-md-4">
+                    <strong>Passport No:</strong> @Model.Patient.PassportNo
+                </div>
+                <div class="col-md-4">
+                    <strong>Emirates ID:</strong> @Model.Patient.EmiratesID
+                </div>
+             
+            </div>
+        </div>
+    </div>
+
+    <!-- Vaccination Details -->
+    <div class="card">
+        <div class="card-header">
+            <h4>Vaccination Details</h4>
+        </div>
+        <div class="card-body">
+            <table class="table table-bordered table-striped">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Vaccine Name</th>
+                        <th>Type</th>
+                        <th>Dose</th>
+                        <th>Date Administered</th>
+                        <th>Added By</th>
+                        <th>Notes</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.VaccinationRecordList != null && Model.VaccinationRecordList.Any())
+                    {
+                        int index = 1;
+                        foreach (var record in Model.VaccinationRecordList)
+                        {
+                            <tr>
+                                <td>@index</td>
+                                <td>@record.VaccineName</td>
+                                <td>@record.VaccineType</td>
+                                @* <td>@record.DoseNumber of @record.TotalDoses</td> *@
+                                <td>@(record.DoseNumber == 1 ? "1st Dose" : record.DoseNumber == 2 ? "2nd Dose" : "")</td>
+                                <td>@record.VaccinationDate.ToString("dd-MMM-yyyy")</td>
+                                <td>@record.AddedBy</td>
+                                <td>@record.Notes</td>
+                            </tr>
+                            index++;
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No vaccination records found.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

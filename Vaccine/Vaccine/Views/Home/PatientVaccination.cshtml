@@ -1,0 +1,57 @@
+﻿@model IEnumerable<PatientDTO>
+<h2 style="text-align:center;">Patient information with vaccination status</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr class="table-primary">
+            <th>Sl No.</th>
+            <th>Patient ID</th>
+            <th>Patient Name</th>
+            <th>Emirates ID</th>
+            <th>Passport No.</th>
+            <th>Date of Birth</th>
+            <th>Nationality</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{
+            int index = 1;
+        }
+        @foreach (var d in Model)
+        {
+            <tr>
+                <td>@index</td>
+                <td>@d.PatientId</td>
+                <td>@d.PatientName</td>
+                <td>@d.EmiratesID</td>
+                <td>@d.PassportNo</td>
+                <td>@d.DOB.ToString("dd-MMM-yyyy")</td>
+                <td>@d.Nationality</td>
+                <td>@d.status</td>
+                
+                <td><button class="btn btn-success" onclick="GetVaccination(@d.PatientId)">View</button></td>
+            </tr>
+            index++;
+        }
+    </tbody>
+</table>
+<div id="divVaccinationPrint"></div>
+<script>
+    function GetVaccination(PatientID){
+    $.ajax({
+            url: '@Url.Action("GetVaccination", "Home")',
+            type: 'GET',
+            data: { PatientID: PatientID },
+            success: function (data) {
+                // Insert the received data (usually HTML) into the divPatientDetail element
+                $('#divVaccinationPrint').html(data);
+            },
+            error: function (xhr, status, error) {
+                // Log error to console for troubleshooting
+                console.error("Error:", error);
+            }
+        });
+    }
+</script>
